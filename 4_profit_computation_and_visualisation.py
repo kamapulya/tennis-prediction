@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Sep 13 14:06:11 2021
-
-@author: Lab5
-"""
 
 import pandas as pd
 from datetime import datetime
@@ -19,12 +14,12 @@ data.Date = data.Date.apply(lambda x:datetime.strptime(x, '%Y-%m-%d'))
 conf = pd.read_csv("D:/current/Python/my_exercise/confidence_data.csv",low_memory=False) #загружаем еще раз чтобы не пачкать
 # lengthconfidence = len(conf)
 # conf.iloc[[0]]
-conf=conf.dropna() #выбрасываем строки, где есть пустые ячейки
-conf=conf.sort_values("date",ascending=True) #сортируем по дате
-conf=conf.reset_index(drop=True) #обновляем индекс
+conf=conf.dropna()
+conf=conf.sort_values("date",ascending=True)
+conf=conf.reset_index(drop=True)
 
-stavka=10 #размер ставки
-p=100 #начальная сумма
+stavka=10 #size of the bet
+p=100 #initial sum
 porog=0.1
 
 profit_all = []
@@ -45,7 +40,7 @@ plt.plot(ticks,profit_all)
 plt.xlabel("Number of matches we bet on")
 plt.ylabel("Bankroll")
 
-# ### Сравнение со стратегией "Ставить на низкий коэффициент"
+# ### Comparison with the strategy "Always bet on the lowest odd"
 # stavka2=1
 # p2=100
 # period = 1800

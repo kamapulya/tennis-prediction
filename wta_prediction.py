@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Sep 13 14:06:11 2021
-
-@author: Lab5
-"""
 
 import pandas as pd
 import numpy as np
 from datetime import datetime,timedelta
 
 import glob
-filenames=list(glob.glob("C:/Users/sbsm1/Documents/my_exercise/20*.xls*"))
+filenames=list(glob.glob("D:/current/Python/my_exercise/20*.xls*"))
 l = [pd.read_excel(filename) for filename in filenames]
 no_b365=[i for i,d in enumerate(l) if "B365W" not in l[i].columns]
 no_pi=[i for i,d in enumerate(l) if "PSW" not in l[i].columns]
@@ -34,14 +29,14 @@ data["LRank"]=data["LRank"].astype(int)
 data["Wsets"]=data["Wsets"].astype(float)
 data["Lsets"]=data["Lsets"].replace("`1",1)
 data["Lsets"]=data["Lsets"].astype(float)
-data = data[data["Comment"] == "Completed"] #здесь оставляем только завершенные матчи
-#data = data.dropna() #здесь выбрасываем все строки где есть пустые поля
+data = data[data["Comment"] == "Completed"] #only completed matches
+#data = data.dropna() #dropping all rows with empty fields
 data=data.reset_index(drop=True)
 
 ### Storage of the raw dataset
-data.to_csv("C:/Users/sbsm1/Documents/my_exercise/wta_data.csv",index=False)
+data.to_csv("D:/current/Python/my_exercise/my_exercise/wta_data.csv",index=False)
 
-data=pd.read_csv("C:/Users/sbsm1/Documents/my_exercise/wta_data.csv",low_memory=False)
+data=pd.read_csv("D:/current/Python/my_exercise/my_exercise/wta_data.csv",low_memory=False)
 data.Date = data.Date.apply(lambda x:datetime.strptime(x, '%Y-%m-%d'))
 
 from sklearn import preprocessing
@@ -124,10 +119,10 @@ features_odds = pd.DataFrame(features_odds)
 # You can remove some features to see the effect on the ROI
 features = pd.concat([features_odds, features_onehot],1)
 
-features.to_csv("C:/Users/sbsm1/Documents/my_exercise/wta_data_features.csv",index=False)
+features.to_csv("D:/current/Python/my_exercise/my_exercise/wta_data_features.csv",index=False)
 
 ######################### Confidence computing for each match ############################
-features=pd.read_csv("C:/Users/sbsm1/Documents/my_exercise/wta_data_features.csv")
+features=pd.read_csv("D:/current/Python/my_exercise/my_exercise/wta_data_features.csv")
 
 start_date=data.Date[0] #first day of testing set
 test_beginning_match=data[data.Date==start_date].index[0] #id of the first match of the testing set
@@ -246,7 +241,7 @@ def assessStrategyGlobal(test_beginning_match,
     
     return confidenceTest
 
-##TODO: переписать функцию которая предсказывает конфиденс
+##TODO: rewrite confidence computing
 # We predict the confidence in each outcome, "duration_test_matches" matches at each iteration
 key_matches=np.array([test_beginning_match+duration_test_matches*i for i in range(int(span_matches/duration_test_matches)+1)])
 confs=[]
@@ -265,22 +260,22 @@ conf=conf.reset_index(drop=True)
 
 
 # We store this dataset
-conf.to_csv("C:/Users/sbsm1/Documents/my_exercise/confidence_data.csv",index=False)
+conf.to_csv("D:/current/Python/my_exercise/my_exercise/confidence_data.csv",index=False)
 
 ##########################################################################################################
 ############################## PROFIT COMPUTATION AND VISUALISATION ######################################
 ##########################################################################################################
 import matplotlib.pyplot as plt
 
-conf = pd.read_csv("C:/Users/sbsm1/Documents/my_exercise/confidence_data.csv",low_memory=False) #загружаем еще раз чтобы не пачкать
+conf = pd.read_csv("D:/current/Python/my_exercise/my_exercise/confidence_data.csv",low_memory=False)
 # lengthconfidence = len(conf)
 # conf.iloc[[0]]
-conf=conf.dropna() #выбрасываем строки, где есть пустые ячейки
-conf=conf.sort_values("date",ascending=True) #сортируем по дате
-conf=conf.reset_index(drop=True) #обновляем индекс
+conf=conf.dropna() 
+conf=conf.sort_values("date",ascending=True) 
+conf=conf.reset_index(drop=True) 
 
-stavka=1 #размер ставки
-p=100 #начальная сумма
+stavka=1 #size of the bet
+p=100 #initial sum
 
 profit_all = []
 for i in range(0,len(conf)):
